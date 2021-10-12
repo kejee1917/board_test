@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="Board">
+
+<!-- 총 게시글 갯수 출력 -->
+<select id="countBoard" parameterType="com.reflexion.board.util.BoardPaging" resultType="int">
+	SELECT NVL(COUNT(*), 0) 
+	FROM TB_BOARD
+	<where>
+	<if test="stype != null and stype != '' and sval != null and sval != '' ">
+			<if test="stype == 'all'">
+				AND (TITLE LIKE CONCAT('%', #{sval}, '%') OR CONTENT LIKE CONCAT('%', #{sval}, '%'))
+			</if>
+			<if test="stype == 'title'">
+				AND TITLE LIKE CONCAT('%', #{sval}, '%')
+			</if>
+			<if test="stype == 'content'">
+				AND CONTENT LIKE CONCAT('%', #{sval}, '%')
+			</if>
+			<if test="stype == 'writer'">
+				AND WRITER=#{sval}
+			</if>	
+	</if>
+	</where>
+</select>
+
+
+
+<!-- 게시글 목록 -->
+<select id="getBoardList" parameterType="com.reflexion.board.util.BoardPaging" resultType="com.reflexion.board.dto.BoardDto">
+	SELECT NUM, TITLE, CONTENT, WRITER, VIEW_CNT, REG_DT
+	FROM TB_BOARD
+	<where>
+	<if test="stype != null and stype != '' and sval != null and sval != '' ">
+			<if test="stype == 'all'">
+				AND (TITLE LIKE CONCAT('%', #{sval}, '%') OR CONTENT LIKE CONCAT('%', #{sval}, '%'))
+			</if>
+			<if test="stype == 'title'">
+				AND TITLE LIKE CONCAT('%', #{sval}, '%')
+			</if>
+			<if test="stype == 'content'">
+				AND CONTENT LIKE CONCAT('%', #{sval}, '%')
+			</if>
+			<if test="stype == 'writer'">
+				AND WRITER=#{sval}
+			</if>	
+	</if>
+	</where>
+	ORDER BY REG_DT DESC
+	LIMIT #{pageStart, jdbcType=INTEGER}, #{perPageNum, jdbcType=INTEGER}
+</select>
+
+
+
+<!-- 게시글 세부내용 -->
+<select id="getBoardDetail" parameterType="int" resultType="com.reflexion.board.dto.BoardDto">
+	SELECT 
+		NUM,
+		(SELECT NUM FROM TB_BOARD WHERE NUM &gt; #{num} ORDER BY NUM LIMIT 1) AS NUM_PRE,
+		(SELECT NUM FROM TB_BOARD WHERE NUM &lt; #{num} ORDER BY NUM DESC LIMIT 1) AS NUM_NEXT,
+		(SELECT TITLE FROM TB_BOARD WHERE NUM &gt; #{num} ORDER BY NUM LIMIT 1) AS TITLE_PRE,
+		(SELECT TITLE FROM TB_BOARD WHERE NUM &lt; #{num} ORDER BY NUM DESC LIMIT 1) AS TITLE_NEXT,
+		TITLE,
+		CONTENT,
+		WRITER,
+		VIEW_CNT,
+		REG_DT
+	FROM 
+		TB_BOARD
+	WHERE 
+		NUM=#{num}
+</select>
+
+
+
+<!-- 조회수 증가 -->
+<update id="viewCount" parameterType="int">
+	UPDATE TB_BOARD
+	SET VIEW_CNT=VIEW_CNT+1
+	WHERE NUM=#{num}
+</update>
+
+
+
+<!-- 이전글 다음글 -->
+<!-- <select id="getPreNextList" parameterType="int" resultType="com.board.a.dto.BoardDto">
+SELECT
+	NUM,
+	(SELECT NUM FROM TB_BOARD WHERE NUM &gt; #{num} ORDER BY NUM LIMIT 1) AS NUM_PRE,
+	(SELECT NUM FROM TB_BOARD WHERE NUM &lt; #{num} ORDER BY NUM DESC LIMIT 1) AS NUM_NEXT,
+	(SELECT TITLE FROM TB_BOARD WHERE NUM &gt; #{num} ORDER BY NUM LIMIT 1) AS TITLE_PRE,
+	(SELECT TITLE FROM TB_BOARD WHERE NUM &lt; #{num} ORDER BY NUM DESC LIMIT 1) AS TITLE_NEXT,
+	TITLE,
+	CONTENT,
+	WRITER,
+	VIEW_CNT,
+	REG_DT
+FROM
+    TB_BOARD
+WHERE NUM=#{num}
+</select> -->
+
+
+
+</mapper>

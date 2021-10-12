@@ -1,0 +1,11 @@
+@charset "UTF-8";
+		
+	.list_table { width:98%; border-bottom:1px solid #EFEFEF; border-right:1px solid #EFEFEF; border-collapse:collapse; margin-left:auto; margin-right:auto; clear:both; }
+	.list_table td,.list_table th { text-align:center; border-top:1px solid #EFEFEF; border-left:1px solid #EFEFEF; padding:0.3em; }
+	.list_table th { background-color:#4D6BB3; color:#FFFFFF; line-height:1.7em; font-weight:normal;}
+	.list_table tr td { padding-top:0.5em; padding-bottom:0.5em;}	
+	.list_table td.title { padding-left:0.5em; text-align:left; }
+	.list_table td.title a:hover { text-decoration:underline; }
+	.list_table th, .list_table td { vertical-align:middle; }	
+
+	.search_box { width:98%; border-width:1px; border-style:solid; border-color:#EFEFEF; background-color:#FFFFFF; padding:2px; padding-top:7px; padding-bottom:7px; margin-top:5px; margin-bottom:10px; margin-left:auto; margin-right:auto; margin-top:5px; margin-bottom:10px; text-align:center; line-height:2.1em;}
